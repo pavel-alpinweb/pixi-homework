@@ -13,7 +13,6 @@ const circleLeftBottom = new PIXI.Graphics();
 const circleRightBottom = new PIXI.Graphics();
 let originalWidth = SQUARE_WIDTH;
 let originalHeight = SQUARE_HEIGHT;
-let originalSquareX = 0;
 let original_mouse_x = 0;
 let original_mouse_y = 0;
 type direction = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -59,6 +58,18 @@ function scaleSquare(event, direction: direction) {
             square.width = originalWidth - (event.global.x - original_mouse_x);
             square.height = originalHeight - (event.global.y - original_mouse_y);
             break;
+        case 'bottom-left':
+            circleLeftBottom.x = event.global.x - ((window.innerWidth / 2) - (square.width / 2));
+            circleLeftBottom.y = event.global.y - ((window.innerHeight / 2) + (square.height / 2));
+            square.width = originalWidth - (event.global.x - original_mouse_x);
+            square.height = originalHeight + (event.global.y - original_mouse_y);
+            break;
+        case 'bottom-right':
+            circleRightBottom.x = event.global.x - ((window.innerWidth / 2) + (square.width / 2));
+            circleRightBottom.y = event.global.y - ((window.innerHeight / 2) + (square.height / 2));
+            square.width = originalWidth + (event.global.x - original_mouse_x);
+            square.height = originalHeight + (event.global.y - original_mouse_y);
+            break;
     }
 
 }
@@ -71,31 +82,35 @@ function highlightGraphics(object: PIXI.Graphics) {
 
     drawCircle(
         circleLeftTop,
-        window.innerWidth / 2 - (SQUARE_WIDTH / 2),
-        window.innerHeight / 2 - (SQUARE_HEIGHT / 2),
+        window.innerWidth / 2 - (originalWidth / 2),
+        window.innerHeight / 2 - (originalHeight / 2),
     );
 
     drawCircle(
         circleRightTop,
-        window.innerWidth / 2 + (SQUARE_WIDTH / 2),
-        window.innerHeight / 2 - (SQUARE_HEIGHT / 2),
+        window.innerWidth / 2 + (originalWidth / 2),
+        window.innerHeight / 2 - (originalHeight / 2),
     );
 
     drawCircle(
         circleLeftBottom,
-        window.innerWidth / 2 - (SQUARE_WIDTH / 2),
-        window.innerHeight / 2 + (SQUARE_HEIGHT / 2),
+        window.innerWidth / 2 - (originalWidth / 2),
+        window.innerHeight / 2 + (originalHeight / 2),
     );
 
     drawCircle(
         circleRightBottom,
-        window.innerWidth / 2 + (SQUARE_WIDTH / 2),
-        window.innerHeight / 2 + (SQUARE_HEIGHT / 2),
+        window.innerWidth / 2 + (originalWidth / 2),
+        window.innerHeight / 2 + (originalHeight / 2),
     );
 }
 
 function clearHighlighting(object: PIXI.Graphics) {
     object.clear();
+    circleLeftTop.clear();
+    circleRightTop.clear();
+    circleLeftBottom.clear();
+    circleRightBottom.clear();
     drawSquare(object, originalWidth, originalHeight);
     isSquareHighlight = false;
 }
@@ -147,10 +162,6 @@ container["on"]('pointerdown', () => {
 
 bg["eventMode"] = 'static';
 bg["on"]('pointerdown', () => {
-    circleLeftTop.clear();
-    circleRightTop.clear();
-    circleLeftBottom.clear();
-    circleRightBottom.clear();
     clearHighlighting(square);
 });
 
@@ -186,14 +197,34 @@ circleRightTop["on"]('pointerdown', (event) => {
     onDragEnd('top-right');
 });
 
-// circleLeftBottom["eventMode"] = 'static';
-// circleLeftBottom.cursor = 'sw-resize';
-// circleLeftBottom["on"]('pointerdown', onDragStart)
-//     ["on"]('pointerup', onDragEnd)
-//     ["on"]('pointerupoutside', onDragEnd);
-//
-// circleRightBottom["eventMode"] = 'static';
-// circleRightBottom.cursor = 'se-resize';
-// circleRightBottom["on"]('pointerdown', onDragStart)
-//     ["on"]('pointerup', onDragEnd)
-//     ["on"]('pointerupoutside', onDragEnd);
+circleLeftBottom["eventMode"] = 'static';
+circleLeftBottom.cursor = 'sw-resize';
+circleLeftBottom["on"]('pointerdown', (event) => {
+    original_mouse_x = event.globalX;
+    original_mouse_y = event.globalY;
+    originalWidth = square.width;
+    originalHeight = square.height;
+    onDragStart('bottom-left');
+})
+    ["on"]('pointerup', () => {
+    onDragEnd('bottom-left');
+})
+    ["on"]('pointerupoutside', () => {
+    onDragEnd('bottom-left');
+});
+
+circleRightBottom["eventMode"] = 'static';
+circleRightBottom.cursor = 'se-resize';
+circleRightBottom["on"]('pointerdown', (event) => {
+    original_mouse_x = event.globalX;
+    original_mouse_y = event.globalY;
+    originalWidth = square.width;
+    originalHeight = square.height;
+    onDragStart('bottom-right');
+})
+    ["on"]('pointerup', () => {
+    onDragEnd('bottom-right');
+})
+    ["on"]('pointerupoutside', () => {
+    onDragEnd('bottom-right');
+});
