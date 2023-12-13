@@ -30,11 +30,26 @@ function drawSquare(object: PIXI.Graphics, width: number, height: number) {
     return object;
 }
 
+function scaleSquare(object: PIXI.Graphics) {
+    console.log('width/height', {
+        width: object.width,
+        height: object.height,
+    });
+}
+
 function highlightGraphics(object: PIXI.Graphics) {
     object.clear();
     object.lineStyle(1.5, '#0099ff', 1);
     drawSquare(object, SQUARE_WIDTH, SQUARE_HEIGHT);
     isSquareHighlight = true;
+}
+
+function clearHighlighting(object: PIXI.Graphics) {
+    const width = object.width;
+    const height = object.height;
+    object.clear();
+    drawSquare(object, width, height);
+    isSquareHighlight = false;
 }
 
 function drawBackground() {
@@ -51,13 +66,6 @@ function drawBackground() {
     return bg;
 }
 
-function clearHighlighting(object: PIXI.Graphics) {
-    const width = object.width;
-    const height = object.height;
-    object.clear();
-    drawSquare(object, width, height);
-    isSquareHighlight = false;
-}
 
 const bg = drawBackground();
 app.stage.addChild(bg);
