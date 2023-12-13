@@ -3,8 +3,15 @@ import '@pixi/graphics-extras';
 
 const SQUARE_WIDTH = 250;
 const SQUARE_HEIGHT = 250;
+let isSquareHighlight = false;
 const appContainer = <HTMLDivElement>document.getElementById('app');
 const container = new PIXI.Container();
+const square = new PIXI.Graphics();
+const circleLeftTop = new PIXI.Graphics();
+const circleRightTop = new PIXI.Graphics();
+const circleLeftBottom = new PIXI.Graphics();
+const circleRightBottom = new PIXI.Graphics();
+
 container.width = window.innerWidth;
 container.height = window.innerHeight;
 const app = new PIXI.Application({
@@ -13,9 +20,6 @@ const app = new PIXI.Application({
     background: '#f5f5f5',
 });
 appContainer.appendChild(<HTMLCanvasElement>app.view);
-
-const square = new PIXI.Graphics();
-let isSquareHighlight = false;
 
 function drawSquare(object: PIXI.Graphics, width: number, height: number) {
     object.beginFill('#fff');
@@ -28,6 +32,11 @@ function drawSquare(object: PIXI.Graphics, width: number, height: number) {
     object.endFill();
 
     return object;
+}
+function drawCircle(object: PIXI.Graphics, x: number, y: number) {
+    object.beginFill('#0099ff');
+    object.drawCircle(x, y, 10);
+    object.endFill();
 }
 
 function scaleSquare(object: PIXI.Graphics) {
@@ -42,6 +51,30 @@ function highlightGraphics(object: PIXI.Graphics) {
     object.lineStyle(1.5, '#0099ff', 1);
     drawSquare(object, SQUARE_WIDTH, SQUARE_HEIGHT);
     isSquareHighlight = true;
+
+    drawCircle(
+        circleLeftTop,
+        window.innerWidth / 2 - (SQUARE_WIDTH / 2),
+        window.innerHeight / 2 - (SQUARE_HEIGHT / 2),
+    );
+
+    drawCircle(
+        circleRightTop,
+        window.innerWidth / 2 + (SQUARE_WIDTH / 2),
+        window.innerHeight / 2 - (SQUARE_HEIGHT / 2),
+    );
+
+    drawCircle(
+        circleLeftBottom,
+        window.innerWidth / 2 - (SQUARE_WIDTH / 2),
+        window.innerHeight / 2 + (SQUARE_HEIGHT / 2),
+    );
+
+    drawCircle(
+        circleRightBottom,
+        window.innerWidth / 2 + (SQUARE_WIDTH / 2),
+        window.innerHeight / 2 + (SQUARE_HEIGHT / 2),
+    );
 }
 
 function clearHighlighting(object: PIXI.Graphics) {
@@ -66,11 +99,14 @@ function drawBackground() {
     return bg;
 }
 
-
 const bg = drawBackground();
 app.stage.addChild(bg);
 app.stage.addChild(container);
 container.addChild(drawSquare(square, SQUARE_WIDTH, SQUARE_HEIGHT));
+container.addChild(circleLeftTop);
+container.addChild(circleRightTop);
+container.addChild(circleLeftBottom);
+container.addChild(circleRightBottom);
 
 container["eventMode"] = 'static';
 container["on"]('pointerdown', () => {
@@ -80,4 +116,8 @@ container["on"]('pointerdown', () => {
 bg["eventMode"] = 'static';
 bg["on"]('pointerdown', () => {
     clearHighlighting(square);
+    clearHighlighting(circleLeftTop);
+    clearHighlighting(circleRightTop);
+    clearHighlighting(circleLeftBottom);
+    clearHighlighting(circleRightBottom);
 });
