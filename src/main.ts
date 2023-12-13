@@ -39,10 +39,10 @@ function drawCircle(object: PIXI.Graphics, x: number, y: number) {
     object.endFill();
 }
 
-function scaleSquare(object: PIXI.Graphics) {
+function scaleSquare() {
     console.log('width/height', {
-        width: object.width,
-        height: object.height,
+        width: square.width,
+        height: square.height,
     });
 }
 
@@ -99,6 +99,20 @@ function drawBackground() {
     return bg;
 }
 
+// Listen to pointermove on stage once handle is pressed.
+function onDragStart()
+{
+    app.stage["eventMode"]  = 'static';
+    app.stage.addEventListener('pointermove', scaleSquare);
+}
+
+// Stop dragging feedback once the handle is released.
+function onDragEnd(e)
+{
+    app.stage["eventMode"]  = 'auto';
+    app.stage.removeEventListener('pointermove', scaleSquare);
+}
+
 const bg = drawBackground();
 app.stage.addChild(bg);
 app.stage.addChild(container);
@@ -124,12 +138,24 @@ bg["on"]('pointerdown', () => {
 
 circleLeftTop["eventMode"] = 'static';
 circleLeftTop.cursor = 'nw-resize';
+circleLeftTop["on"]('pointerdown', onDragStart)
+    ["on"]('pointerup', onDragEnd)
+    ["on"]('pointerupoutside', onDragEnd);
 
 circleRightTop["eventMode"] = 'static';
 circleRightTop.cursor = 'ne-resize';
+circleRightTop["on"]('pointerdown', onDragStart)
+    ["on"]('pointerup', onDragEnd)
+    ["on"]('pointerupoutside', onDragEnd);
 
 circleLeftBottom["eventMode"] = 'static';
 circleLeftBottom.cursor = 'sw-resize';
+circleLeftBottom["on"]('pointerdown', onDragStart)
+    ["on"]('pointerup', onDragEnd)
+    ["on"]('pointerupoutside', onDragEnd);
 
 circleRightBottom["eventMode"] = 'static';
 circleRightBottom.cursor = 'se-resize';
+circleRightBottom["on"]('pointerdown', onDragStart)
+    ["on"]('pointerup', onDragEnd)
+    ["on"]('pointerupoutside', onDragEnd);
