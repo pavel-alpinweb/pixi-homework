@@ -115,9 +115,21 @@ container["on"]('pointerdown', () => {
 
 bg["eventMode"] = 'static';
 bg["on"]('pointerdown', () => {
+    circleLeftTop.clear();
+    circleRightTop.clear();
+    circleLeftBottom.clear();
+    circleRightBottom.clear();
     clearHighlighting(square);
-    clearHighlighting(circleLeftTop);
-    clearHighlighting(circleRightTop);
-    clearHighlighting(circleLeftBottom);
-    clearHighlighting(circleRightBottom);
 });
+
+circleLeftTop["eventMode"] = 'static';
+circleLeftTop.cursor = 'nw-resize';
+
+circleRightTop["eventMode"] = 'static';
+circleRightTop.cursor = 'ne-resize';
+
+circleLeftBottom["eventMode"] = 'static';
+circleLeftBottom.cursor = 'sw-resize';
+
+circleRightBottom["eventMode"] = 'static';
+circleRightBottom.cursor = 'se-resize';
