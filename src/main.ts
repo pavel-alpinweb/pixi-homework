@@ -96,24 +96,40 @@ function scaleSquare(event, direction: direction) {
             circleRightTop.y = event.global.y - ((window.innerHeight / 2) - (square.height / 2));
             square.width = originalWidth + (event.global.x - original_mouse_x);
             square.height = originalHeight - (event.global.y - original_mouse_y);
+            square.position.copyFrom({
+                x: circleRightTop.x - square.width,
+                y: circleRightTop.y - square.height / 4,
+            });
             break;
         case 'top-left':
             circleLeftTop.x = event.global.x - ((window.innerWidth / 2) - (square.width / 2));
             circleLeftTop.y = event.global.y - ((window.innerHeight / 2) - (square.height / 2));
             square.width = originalWidth - (event.global.x - original_mouse_x);
             square.height = originalHeight - (event.global.y - original_mouse_y);
+            square.position.copyFrom({
+                x: circleLeftTop.x - square.width * 2,
+                y: circleLeftTop.y - square.height / 4,
+            });
             break;
         case 'bottom-left':
             circleLeftBottom.x = event.global.x - ((window.innerWidth / 2) - (square.width / 2));
             circleLeftBottom.y = event.global.y - ((window.innerHeight / 2) + (square.height / 2));
             square.width = originalWidth - (event.global.x - original_mouse_x);
             square.height = originalHeight + (event.global.y - original_mouse_y);
+            square.position.copyFrom({
+                x: circleLeftTop.x - square.width / 4,
+                y: circleLeftTop.y - square.height,
+            });
             break;
         case 'bottom-right':
             circleRightBottom.x = event.global.x - ((window.innerWidth / 2) + (square.width / 2));
             circleRightBottom.y = event.global.y - ((window.innerHeight / 2) + (square.height / 2));
             square.width = originalWidth + (event.global.x - original_mouse_x);
             square.height = originalHeight + (event.global.y - original_mouse_y);
+            square.position.copyFrom({
+                x: circleRightBottom.x - square.width / 2,
+                y: circleRightBottom.y - square.height / 2,
+            });
             break;
     }
 
