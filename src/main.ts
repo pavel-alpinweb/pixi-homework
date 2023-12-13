@@ -17,13 +17,13 @@ appContainer.appendChild(<HTMLCanvasElement>app.view);
 const square = new PIXI.Graphics();
 let isSquareHighlight = false;
 
-function drawSquare(object: PIXI.Graphics) {
+function drawSquare(object: PIXI.Graphics, width: number, height: number) {
     object.beginFill('#fff');
     object.drawRect(
-        window.innerWidth / 2 - SQUARE_WIDTH / 2,
-        window.innerHeight / 2 - SQUARE_HEIGHT / 2,
-        SQUARE_WIDTH,
-        SQUARE_HEIGHT
+        window.innerWidth / 2 - width / 2,
+        window.innerHeight / 2 - height / 2,
+        width,
+        height
     );
     object.endFill();
 
@@ -32,8 +32,8 @@ function drawSquare(object: PIXI.Graphics) {
 
 function highlightGraphics(object: PIXI.Graphics) {
     object.clear();
-    object.lineStyle(2, '#0099ff', 1);
-    drawSquare(object);
+    object.lineStyle(1.5, '#0099ff', 1);
+    drawSquare(object, SQUARE_WIDTH, SQUARE_HEIGHT);
     isSquareHighlight = true;
 }
 
@@ -52,24 +52,24 @@ function drawBackground() {
 }
 
 function clearHighlighting(object: PIXI.Graphics) {
+    const width = object.width;
+    const height = object.height;
     object.clear();
-    drawSquare(object);
+    drawSquare(object, width, height);
     isSquareHighlight = false;
 }
 
 const bg = drawBackground();
 app.stage.addChild(bg);
 app.stage.addChild(container);
-container.addChild(drawSquare(square));
+container.addChild(drawSquare(square, SQUARE_WIDTH, SQUARE_HEIGHT));
 
-container.eventMode = 'static';
-container.on('pointerdown', () => {
+container["eventMode"] = 'static';
+container["on"]('pointerdown', () => {
     highlightGraphics(square);
-    console.log('is highlight', isSquareHighlight);
 });
 
-bg.eventMode = 'static';
-bg.on('pointerdown', () => {
+bg["eventMode"] = 'static';
+bg["on"]('pointerdown', () => {
     clearHighlighting(square);
-    console.log('is highlight', isSquareHighlight);
 });
