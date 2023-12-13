@@ -22,22 +22,71 @@ const app = new PIXI.Application({
 });
 appContainer.appendChild(<HTMLCanvasElement>app.view);
 
-function drawSquare(object: PIXI.Graphics, width: number, height: number) {
-    object.beginFill('#fff');
-    object.drawRect(
+function drawSquare(width: number, height: number) {
+    square.beginFill('#fff');
+    square.drawRect(
         window.innerWidth / 2 - width / 2,
         window.innerHeight / 2 - height / 2,
         width,
         height
     );
-    object.endFill();
+    square.endFill();
 
-    return object;
+    return square;
 }
 function drawCircle(object: PIXI.Graphics, x: number, y: number) {
     object.beginFill('#0099ff');
     object.drawCircle(x, y, 10);
     object.endFill();
+}
+function drawBackground() {
+    const bg = new PIXI.Graphics();
+    bg.beginFill('#f5f5f5');
+    bg.drawRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+    bg.endFill();
+
+    return bg;
+}
+
+function highlightGraphics() {
+    square.clear();
+    square.lineStyle(1.5, '#0099ff', 1);
+    drawSquare(originalWidth, originalHeight);
+    isSquareHighlight = true;
+
+    drawCircle(
+        circleLeftTop,
+        window.innerWidth / 2 - (originalWidth / 2),
+        window.innerHeight / 2 - (originalHeight / 2),
+    );
+
+    drawCircle(
+        circleRightTop,
+        window.innerWidth / 2 + (originalWidth / 2),
+        window.innerHeight / 2 - (originalHeight / 2),
+    );
+
+    drawCircle(
+        circleLeftBottom,
+        window.innerWidth / 2 - (originalWidth / 2),
+        window.innerHeight / 2 + (originalHeight / 2),
+    );
+
+    drawCircle(
+        circleRightBottom,
+        window.innerWidth / 2 + (originalWidth / 2),
+        window.innerHeight / 2 + (originalHeight / 2),
+    );
+}
+function clearHighlighting() {
+    square.clear();
+    drawSquare(originalWidth, originalHeight);
+    isSquareHighlight = false;
 }
 
 function scaleSquare(event, direction: direction) {
@@ -69,57 +118,6 @@ function scaleSquare(event, direction: direction) {
     }
 
 }
-
-function highlightGraphics(object: PIXI.Graphics) {
-    object.clear();
-    object.lineStyle(1.5, '#0099ff', 1);
-    drawSquare(object, originalWidth, originalHeight);
-    isSquareHighlight = true;
-
-    drawCircle(
-        circleLeftTop,
-        window.innerWidth / 2 - (originalWidth / 2),
-        window.innerHeight / 2 - (originalHeight / 2),
-    );
-
-    drawCircle(
-        circleRightTop,
-        window.innerWidth / 2 + (originalWidth / 2),
-        window.innerHeight / 2 - (originalHeight / 2),
-    );
-
-    drawCircle(
-        circleLeftBottom,
-        window.innerWidth / 2 - (originalWidth / 2),
-        window.innerHeight / 2 + (originalHeight / 2),
-    );
-
-    drawCircle(
-        circleRightBottom,
-        window.innerWidth / 2 + (originalWidth / 2),
-        window.innerHeight / 2 + (originalHeight / 2),
-    );
-}
-
-function clearHighlighting(object: PIXI.Graphics) {
-    object.clear();
-    drawSquare(object, originalWidth, originalHeight);
-    isSquareHighlight = false;
-}
-
-function drawBackground() {
-    const bg = new PIXI.Graphics();
-    bg.beginFill('#f5f5f5');
-    bg.drawRect(
-        0,
-        0,
-        window.innerWidth,
-        window.innerHeight
-    );
-    bg.endFill();
-
-    return bg;
-}
 function onDragStart(direction: direction) {
     app.stage["eventMode"]  = 'static';
     app.stage.addEventListener('pointermove', (event) => {
@@ -135,7 +133,7 @@ function onDragEnd(direction: direction) {
 
 const bg = drawBackground();
 app.stage.addChild(bg);
-app.stage.addChild(drawSquare(square, SQUARE_WIDTH, SQUARE_HEIGHT));
+app.stage.addChild(drawSquare(SQUARE_WIDTH, SQUARE_HEIGHT));
 app.stage.addChild(circleLeftTop);
 app.stage.addChild(circleRightTop);
 app.stage.addChild(circleLeftBottom);
@@ -143,7 +141,7 @@ app.stage.addChild(circleRightBottom);
 
 square["eventMode"] = 'static';
 square["on"]('pointerdown', () => {
-    highlightGraphics(square);
+    highlightGraphics();
 });
 
 bg["eventMode"] = 'static';
@@ -152,61 +150,61 @@ bg["on"]('pointerdown', () => {
     circleRightTop.clear();
     circleLeftBottom.clear();
     circleRightBottom.clear();
-    clearHighlighting(square);
+    clearHighlighting();
 });
 
 circleLeftTop["eventMode"] = 'static';
 circleLeftTop.cursor = 'nw-resize';
-circleLeftTop["on"]('pointerdown', (event) => {
-    original_mouse_x = event.globalX;
-    original_mouse_y = event.globalY;
-    onDragStart('top-left');
-})
-    ["on"]('pointerup', () => {
-    onDragEnd('top-left');
-})
-    ["on"]('pointerupoutside', () => {
-    onDragEnd('top-left');
-});
+// circleLeftTop["on"]('pointerdown', (event) => {
+//     original_mouse_x = event.globalX;
+//     original_mouse_y = event.globalY;
+//     onDragStart('top-left');
+// })
+//     ["on"]('pointerup', () => {
+//     onDragEnd('top-left');
+// })
+//     ["on"]('pointerupoutside', () => {
+//     onDragEnd('top-left');
+// });
 
 circleRightTop["eventMode"] = 'static';
 circleRightTop.cursor = 'ne-resize';
-circleRightTop["on"]('pointerdown', (event) => {
-    original_mouse_x = event.globalX;
-    original_mouse_y = event.globalY;
-    onDragStart('top-right');
-})
-    ["on"]('pointerup', () => {
-    onDragEnd('top-right');
-})
-    ["on"]('pointerupoutside', () => {
-    onDragEnd('top-right');
-});
+// circleRightTop["on"]('pointerdown', (event) => {
+//     original_mouse_x = event.globalX;
+//     original_mouse_y = event.globalY;
+//     onDragStart('top-right');
+// })
+//     ["on"]('pointerup', () => {
+//     onDragEnd('top-right');
+// })
+//     ["on"]('pointerupoutside', () => {
+//     onDragEnd('top-right');
+// });
 
 circleLeftBottom["eventMode"] = 'static';
 circleLeftBottom.cursor = 'sw-resize';
-circleLeftBottom["on"]('pointerdown', (event) => {
-    original_mouse_x = event.globalX;
-    original_mouse_y = event.globalY;
-    onDragStart('bottom-left');
-})
-    ["on"]('pointerup', () => {
-    onDragEnd('bottom-left');
-})
-    ["on"]('pointerupoutside', () => {
-    onDragEnd('bottom-left');
-});
+// circleLeftBottom["on"]('pointerdown', (event) => {
+//     original_mouse_x = event.globalX;
+//     original_mouse_y = event.globalY;
+//     onDragStart('bottom-left');
+// })
+//     ["on"]('pointerup', () => {
+//     onDragEnd('bottom-left');
+// })
+//     ["on"]('pointerupoutside', () => {
+//     onDragEnd('bottom-left');
+// });
 
 circleRightBottom["eventMode"] = 'static';
 circleRightBottom.cursor = 'se-resize';
-circleRightBottom["on"]('pointerdown', (event) => {
-    original_mouse_x = event.globalX;
-    original_mouse_y = event.globalY;
-    onDragStart('bottom-right');
-})
-    ["on"]('pointerup', () => {
-    onDragEnd('bottom-right');
-})
-    ["on"]('pointerupoutside', () => {
-    onDragEnd('bottom-right');
-});
+// circleRightBottom["on"]('pointerdown', (event) => {
+//     original_mouse_x = event.globalX;
+//     original_mouse_y = event.globalY;
+//     onDragStart('bottom-right');
+// })
+//     ["on"]('pointerup', () => {
+//     onDragEnd('bottom-right');
+// })
+//     ["on"]('pointerupoutside', () => {
+//     onDragEnd('bottom-right');
+// });
