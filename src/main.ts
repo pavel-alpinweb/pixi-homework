@@ -5,7 +5,6 @@ const SQUARE_WIDTH = 250;
 const SQUARE_HEIGHT = 250;
 let isSquareHighlight = false;
 const appContainer = <HTMLDivElement>document.getElementById('app');
-const container = new PIXI.Container();
 const square = new PIXI.Graphics();
 const circleLeftTop = new PIXI.Graphics();
 const circleRightTop = new PIXI.Graphics();
@@ -16,9 +15,6 @@ let originalHeight = SQUARE_HEIGHT;
 let original_mouse_x = 0;
 let original_mouse_y = 0;
 type direction = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-
-container.width = window.innerWidth;
-container.height = window.innerHeight;
 const app = new PIXI.Application({
     antialias: true,
     resizeTo: appContainer,
@@ -107,10 +103,6 @@ function highlightGraphics(object: PIXI.Graphics) {
 
 function clearHighlighting(object: PIXI.Graphics) {
     object.clear();
-    circleLeftTop.clear();
-    circleRightTop.clear();
-    circleLeftBottom.clear();
-    circleRightBottom.clear();
     drawSquare(object, originalWidth, originalHeight);
     isSquareHighlight = false;
 }
@@ -128,18 +120,13 @@ function drawBackground() {
 
     return bg;
 }
-// Listen to pointermove on stage once handle is pressed.
-function onDragStart(direction: direction)
-{
+function onDragStart(direction: direction) {
     app.stage["eventMode"]  = 'static';
     app.stage.addEventListener('pointermove', (event) => {
         scaleSquare(event, direction);
     });
 }
-
-// Stop dragging feedback once the handle is released.
-function onDragEnd(direction: direction)
-{
+function onDragEnd(direction: direction) {
     app.stage["eventMode"]  = 'auto';
     app.stage.removeEventListener('pointermove', (event) => {
         scaleSquare(event, direction);
@@ -148,20 +135,23 @@ function onDragEnd(direction: direction)
 
 const bg = drawBackground();
 app.stage.addChild(bg);
-app.stage.addChild(container);
-container.addChild(drawSquare(square, SQUARE_WIDTH, SQUARE_HEIGHT));
-container.addChild(circleLeftTop);
-container.addChild(circleRightTop);
-container.addChild(circleLeftBottom);
-container.addChild(circleRightBottom);
+app.stage.addChild(drawSquare(square, SQUARE_WIDTH, SQUARE_HEIGHT));
+app.stage.addChild(circleLeftTop);
+app.stage.addChild(circleRightTop);
+app.stage.addChild(circleLeftBottom);
+app.stage.addChild(circleRightBottom);
 
-container["eventMode"] = 'static';
-container["on"]('pointerdown', () => {
+square["eventMode"] = 'static';
+square["on"]('pointerdown', () => {
     highlightGraphics(square);
 });
 
 bg["eventMode"] = 'static';
 bg["on"]('pointerdown', () => {
+    circleLeftTop.clear();
+    circleRightTop.clear();
+    circleLeftBottom.clear();
+    circleRightBottom.clear();
     clearHighlighting(square);
 });
 
@@ -170,8 +160,6 @@ circleLeftTop.cursor = 'nw-resize';
 circleLeftTop["on"]('pointerdown', (event) => {
     original_mouse_x = event.globalX;
     original_mouse_y = event.globalY;
-    originalWidth = square.width;
-    originalHeight = square.height;
     onDragStart('top-left');
 })
     ["on"]('pointerup', () => {
@@ -186,8 +174,6 @@ circleRightTop.cursor = 'ne-resize';
 circleRightTop["on"]('pointerdown', (event) => {
     original_mouse_x = event.globalX;
     original_mouse_y = event.globalY;
-    originalWidth = square.width;
-    originalHeight = square.height;
     onDragStart('top-right');
 })
     ["on"]('pointerup', () => {
@@ -202,8 +188,6 @@ circleLeftBottom.cursor = 'sw-resize';
 circleLeftBottom["on"]('pointerdown', (event) => {
     original_mouse_x = event.globalX;
     original_mouse_y = event.globalY;
-    originalWidth = square.width;
-    originalHeight = square.height;
     onDragStart('bottom-left');
 })
     ["on"]('pointerup', () => {
@@ -218,8 +202,6 @@ circleRightBottom.cursor = 'se-resize';
 circleRightBottom["on"]('pointerdown', (event) => {
     original_mouse_x = event.globalX;
     original_mouse_y = event.globalY;
-    originalWidth = square.width;
-    originalHeight = square.height;
     onDragStart('bottom-right');
 })
     ["on"]('pointerup', () => {
